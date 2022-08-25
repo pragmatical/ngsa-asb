@@ -1,0 +1,12 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: kured                           # Must match `--ds-name`
+  namespace: cluster-baseline-settings  # Must match `--ds-namespace`
+spec:
+  template:    
+    spec:      
+      containers:
+        - name: kured
+          image: docker.io/weaveworks/kured:1.6.1  

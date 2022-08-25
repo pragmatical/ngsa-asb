@@ -1,0 +1,53 @@
+apiVersion: aadpodidentity.k8s.io/v1
+kind: AzureIdentity
+metadata:
+  name: grafana-id
+  namespace: monitoring
+spec:
+  type: 0
+  resourceID: /subscriptions/648dcb5a-de1e-48b2-af6b-fe6ef28d355c/resourcegroups/rg-ngsa-asb-dev/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ngsa-asb-ngsa-id
+  clientID: ed1c4c70-e050-48c6-b864-ea1f8695054e
+
+---
+
+apiVersion: aadpodidentity.k8s.io/v1
+kind: AzureIdentityBinding
+metadata:
+  name: grafana-id-binding
+  namespace: monitoring
+spec:
+  azureIdentity: grafana-id
+  selector: grafana-id
+
+---
+
+apiVersion: secrets-store.csi.x-k8s.io/v1alpha1
+kind: SecretProviderClass
+metadata:
+  name: grafana-secrets
+  namespace: monitoring
+spec:
+  provider: azure
+  secretObjects:
+  - secretName: grafana-aad-client-secret
+    type: Opaque
+    data:
+      - objectName: grafana-aad-client-secret
+        key: clientSecret
+  - secretName: grafana-azure-monitor-client-secret
+    type: Opaque
+    data:
+      - objectName: grafana-azure-monitor-client-secret
+        key: clientSecret
+  parameters:
+    usePodIdentity: "true"
+    keyvaultName: "kv-aks-3i2qzkkxofr7c"
+    objects: |
+      array:
+        - |
+          objectName: grafana-aad-client-secret
+          objectType: secret
+        - |
+          objectName: grafana-azure-monitor-client-secret
+          objectType: secret
+    tenantId: "72f988bf-86f1-41af-91ab-2d7cd011db47"

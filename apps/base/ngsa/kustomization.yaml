@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yaml
+  - ngsa-pod-identity.yaml
+  - ngsa/ngsa-cosmos.yaml
+  - ngsa/ngsa-memory.yaml
+  - ngsa-java/ngsa-java.yaml
+  
